@@ -17,3 +17,22 @@ brew trust kadirmetin/nuvio
 
 # Install the application
 brew install --cask nuviodesktop
+```
+
+## Upgrade
+
+To upgrade Nuvio Desktop to the latest version when a new release is available in this tap, run:
+
+```bash
+brew update
+brew upgrade --cask nuviodesktop
+```
+
+## Uninstall
+
+If you want to uninstall Nuvio Desktop and remove this tap from your system, run the following commands:
+
+```bash
+brew uninstall --cask nuviodesktop
+brew untap kadirmetin/nuvio
+```
