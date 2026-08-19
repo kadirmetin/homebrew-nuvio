@@ -1,7 +1,7 @@
 cask "nuviodesktop" do
   arch arm: "arm64", intel: "x86_64"
 
-  version "0.1.19-alpha"
+  version "0.1.20-alpha"
   sha256 :no_check
 
   url "https://github.com/NuvioMedia/NuvioDesktop/releases/download/#{version}/Nuvio-macOS-#{arch}-#{version}.dmg"
