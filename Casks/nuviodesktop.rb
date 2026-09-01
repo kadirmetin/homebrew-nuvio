@@ -15,7 +15,7 @@ cask "nuviodesktop" do
     ohai "Patching Nuvio with bash script"
 
     system_command "/bin/bash",
-      args:
+      args: [
         "-c",
         # We use single quotes (<<~'EOS') so Ruby doesn't try to parse the bash variables
         <<~'EOS'
@@ -72,6 +72,7 @@ cask "nuviodesktop" do
         EOS
       ],
       sudo: true
-      ohai "Nuvio patched, good to go."
+
+    ohai "Nuvio patched, good to go."
   end
 end
