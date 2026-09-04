@@ -1,7 +1,7 @@
 cask "nuviodesktop" do
   arch arm: "arm64", intel: "x86_64"
 
-  version "0.1.21-alpha"
+  version "0.1.22-alpha"
   sha256 :no_check
 
   url "https://github.com/NuvioMedia/NuvioDesktop/releases/download/#{version}/Nuvio-macOS-#{arch}-#{version}.dmg"
@@ -13,7 +13,6 @@ cask "nuviodesktop" do
 
   postflight do
     ohai "Patching Nuvio with bash script"
-
     system_command "/bin/bash",
       args: [
         "-c",
@@ -51,13 +50,14 @@ cask "nuviodesktop" do
           unzip -p "$JAR" "$RESOURCE" > "$TEMP/patch/$RESOURCE"
           chmod +x "$TEMP/patch/$RESOURCE"
           codesign --force --sign - "$TEMP/patch/$RESOURCE"
+
           cp "$JAR" "$TEMP/patched.jar"
           (
             cd "$TEMP/patch"
             zip -q -u "$TEMP/patched.jar" "$RESOURCE"
           )
           cp "$TEMP/patched.jar" "$JAR"
-          
+
           # 4. Sign the whole app deeply
           codesign --force --deep --sign - "$APP"
 
@@ -68,11 +68,11 @@ cask "nuviodesktop" do
           chmod +x "$TORRSERVER"
           codesign --force --sign - "$TORRSERVER"
           chown -R "$TARGET_USER" "$DATA/torrserver"
+
           rm -rf "$TEMP"
         EOS
       ],
       sudo: true
-
     ohai "Nuvio patched, good to go."
   end
 end
