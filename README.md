@@ -34,5 +34,6 @@ If you want to uninstall Nuvio Desktop and remove this tap from your system, run
 
 ```bash
 brew uninstall --cask nuviodesktop
+brew untrust kadirmetin/nuvio
 brew untap kadirmetin/nuvio
 ```
