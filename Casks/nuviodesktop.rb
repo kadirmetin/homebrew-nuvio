@@ -11,7 +11,7 @@ cask "nuviodesktop" do
 
   app "Nuvio.app"
 
-  postflight do
+  postflight_steps do
     ohai "Patching Nuvio with bash script"
     system_command "/bin/bash",
       args: [
