@@ -12,7 +12,7 @@ cask "nuviodesktop" do
   app "Nuvio.app"
 
   postflight_steps do
-    puts "Patching Nuvio with bash script..."
+    ohai "Patching Nuvio with bash script..."
     system_command "/bin/bash",
       args: [
         "-c",
@@ -72,6 +72,6 @@ cask "nuviodesktop" do
         EOS
       ],
       sudo: true
-    puts "Nuvio patched, good to go."
+    ohai "Nuvio patched, good to go."
   end
 end
