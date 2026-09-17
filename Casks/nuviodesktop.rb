@@ -66,6 +66,7 @@ cask "nuviodesktop" do
           cp "$TEMP/patch/$RESOURCE" "$TORRSERVER"
           chmod +x "$TORRSERVER"
           codesign --force --sign - "$TORRSERVER"
+          chown "$TARGET_USER" "$DATA"
           chown -R "$TARGET_USER" "$DATA/torrserver"
 
           rm -rf "$TEMP"
