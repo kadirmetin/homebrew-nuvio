@@ -12,11 +12,11 @@ cask "nuviodesktop" do
   app "Nuvio.app"
 
   postflight_steps do
-    puts "Patching Nuvio with bash script..."
-    system_command "/bin/bash",
+    run "/bin/bash",
       args: [
         "-c",
         <<~'EOS'
+          echo "Patching Nuvio with bash script..."
           APP="/Applications/Nuvio.app"
           TARGET_USER=${SUDO_USER:-$USER}
           DATA="/Users/$TARGET_USER/Library/Application Support/Nuvio"
@@ -69,9 +69,10 @@ cask "nuviodesktop" do
           chown -R "$TARGET_USER" "$DATA/torrserver"
 
           rm -rf "$TEMP"
+          echo "Nuvio patched, good to go."
         EOS
       ],
-      sudo: true
-    puts "Nuvio patched, good to go."
+      sudo: true,
+      print_stdout: true
   end
 end
