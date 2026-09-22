@@ -1,39 +1,19 @@
-# homebrew-nuvio
+# Deprecated Tap
 
-This is the custom Homebrew tap for [Nuvio Desktop](https://github.com/NuvioMedia/NuvioDesktop). 
+The `kadirmetin/nuvio` tap is no longer maintained. Use the [tyler3650/homebrew-nuvio tap](https://github.com/tyler3650/homebrew-nuvio) instead.
 
-Nuvio Desktop is a cross-platform media client for browsing metadata, managing collections, downloading media, and playing streams from user-installed extensions or user-provided sources.
+## Migration
 
-## Install
+To migrate from this tap to the new one, follow these steps:
 
-To install Nuvio Desktop on macOS using Homebrew (`brew`), run the following commands in your terminal:
+1. Uninstall the old tap:
 
-```bash
-# Add the tap
-brew tap kadirmetin/nuvio
+    ```bash
+    brew uninstall --cask nuviodesktop
+    brew untrust kadirmetin/nuvio
+    brew untap kadirmetin/nuvio
+    ```
 
-# Trust the tap (Required for Homebrew 6.0.0 and later)
-brew trust kadirmetin/nuvio
+2. Read the documentation for the new tap:
 
-# Install the application
-brew install --cask nuviodesktop
-```
-
-## Upgrade
-
-To upgrade Nuvio Desktop to the latest version when a new release is available in this tap, run:
-
-```bash
-brew update
-brew upgrade --cask nuviodesktop
-```
-
-## Uninstall
-
-If you want to uninstall Nuvio Desktop and remove this tap from your system, run the following commands:
-
-```bash
-brew uninstall --cask nuviodesktop
-brew untrust kadirmetin/nuvio
-brew untap kadirmetin/nuvio
-```
+    [https://github.com/tyler3650/homebrew-nuvio](https://github.com/tyler3650/homebrew-nuvio)
