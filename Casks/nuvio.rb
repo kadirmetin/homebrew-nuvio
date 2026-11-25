@@ -12,6 +12,7 @@ cask "nuvio" do
 
   livecheck do
     url :url
+    regex(/^v?(\d+(?:\.\d+)+(?:-[a-z0-9.]+)?)$/i)
     strategy :github_latest
   end
 
