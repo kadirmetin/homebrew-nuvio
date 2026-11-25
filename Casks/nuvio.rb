@@ -9,6 +9,11 @@ cask "nuvio" do
   desc "Media client for browsing, collecting, downloading, and streaming"
   homepage "https://github.com/NuvioMedia/NuvioDesktop"
 
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
+
   depends_on :macos
 
   app "Nuvio.app"

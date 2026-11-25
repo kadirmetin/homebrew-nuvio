@@ -1,0 +1,61 @@
+name: Update Nuvio
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # every 6 hours
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-nuvio
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check latest NuvioDesktop release
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          CASK=Casks/nuvio.rb
+
+          release=$(gh api repos/NuvioMedia/NuvioDesktop/releases/latest)
+          latest=$(jq -r .tag_name <<<"$release")
+          current=$(sed -nE 's/^[[:space:]]*version "([^"]+)".*/\1/p' "$CASK")
+          echo "current=$current latest=$latest"
+
+          if [ -z "$latest" ] || [ "$latest" = "null" ]; then
+            echo "Could not read latest tag"; exit 1
+          fi
+          if [ "$latest" = "$current" ]; then
+            echo "Already up to date"; echo "updated=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+
+          # Make sure both macOS DMGs are uploaded before bumping
+          for arch in arm64 x86_64; do
+            asset="Nuvio-macOS-${arch}-${latest}.dmg"
+            if ! jq -e --arg n "$asset" '.assets[] | select(.name == $n)' <<<"$release" >/dev/null; then
+              echo "Asset $asset not found yet, skipping this run"
+              echo "updated=false" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+          done
+
+          sed -i -E "s/^([[:space:]]*version \")[^\"]+(\")/\1${latest}\2/" "$CASK"
+          echo "updated=true" >> "$GITHUB_OUTPUT"
+          echo "version=$latest" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push
+        if: steps.check.outputs.updated == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add Casks/nuvio.rb
+          git commit -m "Update Nuvio version to ${{ steps.check.outputs.version }}"
+          git push
