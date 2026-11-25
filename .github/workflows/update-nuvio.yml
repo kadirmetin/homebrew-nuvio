@@ -47,7 +47,23 @@ jobs:
             fi
           done
 
+          # Download both DMGs and compute sha256
+          base="https://github.com/NuvioMedia/NuvioDesktop/releases/download/${latest}"
+          curl -fsSL -o arm64.dmg "${base}/Nuvio-macOS-arm64-${latest}.dmg"
+          curl -fsSL -o x86_64.dmg "${base}/Nuvio-macOS-x86_64-${latest}.dmg"
+          sha_arm=$(sha256sum arm64.dmg | cut -d' ' -f1)
+          sha_intel=$(sha256sum x86_64.dmg | cut -d' ' -f1)
+          rm -f arm64.dmg x86_64.dmg
+          echo "arm64=$sha_arm x86_64=$sha_intel"
+
           sed -i -E "s/^([[:space:]]*version \")[^\"]+(\")/\1${latest}\2/" "$CASK"
+          sed -i -E "s/(arm:[[:space:]]+\")[0-9a-f]{64}(\")/\1${sha_arm}\2/" "$CASK"
+          sed -i -E "s/(intel:[[:space:]]+\")[0-9a-f]{64}(\")/\1${sha_intel}\2/" "$CASK"
+
+          # Fail if any of the replacements didn't land
+          grep -q "version \"${latest}\"" "$CASK"
+          grep -q "\"${sha_arm}\"" "$CASK"
+          grep -q "\"${sha_intel}\"" "$CASK"
           echo "updated=true" >> "$GITHUB_OUTPUT"
           echo "version=$latest" >> "$GITHUB_OUTPUT"
 
