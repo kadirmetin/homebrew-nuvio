@@ -21,7 +21,9 @@ brew install --cask nuvio
 
 ## Upgrade
 
-To upgrade Nuvio to the latest version when a new release is available in this tap, run:
+This tap is updated automatically. A GitHub Actions workflow checks [NuvioDesktop releases](https://github.com/NuvioMedia/NuvioDesktop/releases) every 6 hours and, when a new version is published, bumps the cask version and its SHA-256 checksums.
+
+To upgrade Nuvio to the latest version, run:
 
 ```bash
 brew update
@@ -37,3 +39,17 @@ brew uninstall --cask nuvio
 brew untrust kadirmetin/nuvio
 brew untap kadirmetin/nuvio
 ```
+
+To also remove Nuvio's settings, library data and caches, use `--zap` instead (this cannot be undone):
+
+```bash
+brew uninstall --zap --cask nuvio
+```
+
+This deletes:
+
+- `~/Library/Application Support/Nuvio`
+- `~/Library/Caches/Nuvio`
+- `~/Library/Caches/com.nuvio.media.desktop`
+- `~/Library/HTTPStorages/com.nuvio.media.desktop`
+- `~/Library/WebKit/com.nuvio.media.desktop`
