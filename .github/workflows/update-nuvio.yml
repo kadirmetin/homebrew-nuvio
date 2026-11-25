@@ -44,6 +44,10 @@ jobs:
           if [ -z "$latest" ] || [ "$latest" = "null" ]; then
             echo "Could not read latest tag"; exit 1
           fi
+          # Only accept plain version-like tags (guards against injection via tag names)
+          if ! [[ "$latest" =~ ^v?[0-9]+(\.[0-9]+)+(-[A-Za-z0-9.]+)?$ ]]; then
+            echo "Unexpected tag format: $latest"; exit 1
+          fi
           if [ "$latest" = "$current" ] && [ "$FORCE" != "true" ]; then
             echo "Already up to date"; echo "updated=false" >> "$GITHUB_OUTPUT"; exit 0
           fi
@@ -97,13 +101,17 @@ jobs:
 
       # If this fails, nothing is committed and users stay on the last working version
       - name: Audit cask
+        env:
+          TAP: ${{ steps.brew.outputs.tap-name }}
         run: |
           brew style Casks/nuvio.rb
-          brew audit --cask --strict --online "${{ steps.brew.outputs.tap-name }}/nuvio"
+          brew audit --cask --strict --online "${TAP}/nuvio"
 
       - name: Commit and push
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.check.outputs.version }}
+          REPO: ${{ github.repository }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
@@ -111,5 +119,5 @@ jobs:
             echo "No changes to commit"; exit 0
           fi
           git add Casks/nuvio.rb
-          git commit -m "Update Nuvio version to ${{ needs.check.outputs.version }}"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" HEAD:main
+          git commit -m "Update Nuvio version to ${VERSION}"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" HEAD:main
